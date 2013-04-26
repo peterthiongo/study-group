@@ -1,4 +1,6 @@
-
+<?php 
+session_start();
+?>
 
 <!DOCTYPE html>
 <html>
@@ -53,7 +55,7 @@
                 <a data-role="button" href="www.viewYourTests.com">
                     view your tests
                 </a>
-                <a data-role="button" href="www.createNEWtests.com">
+                <a data-role="button" href="newTest.php">
                     create new test
                 </a>
                 <a data-role="button" href="www.testStatistics.com">
