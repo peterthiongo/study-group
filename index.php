@@ -1,41 +1,31 @@
-<?php 
+<?php  
+include 'head.php';
+include 'Classes/DB.php';
+
 session_start();
+//check for user
+if (isset($_SESSION['user']))
+	$user = $_SESSION['user'];
+
+
+//check if user aborted creating a test
+if (isset($_SESSION['newTest']))
+	unset($_SESSION['newTest']);
+
+//new user, create http://localhost/study/?user=1
+else{
+	//for testing purpose this will be a facebook user
+	if (isset($_GET['user']))
+		$user = new User(2,'Phillip');
+	else
+		$user = new User(1,'Nimrod');
+	
+	//save the user to the session
+	$_SESSION['user'] = $user;
+}
+
 ?>
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <title>
-        </title>
-        <link rel="stylesheet" href="https://s3.amazonaws.com/codiqa-cdn/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-        <link rel="stylesheet" href="my.css" />
-        <script src="https://s3.amazonaws.com/codiqa-cdn/jquery-1.7.2.min.js">
-        </script>
-        <script src="https://s3.amazonaws.com/codiqa-cdn/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
-        </script>
-        <script src="my.js">
-        </script>
-        <!-- User-generated css -->
-        <style>
-        </style>
-        <!-- User-generated js -->
-        <script>
-            try {
-
-    $(function() {
-
-    });
-
-  } catch (error) {
-    console.error("Your javascript has an error: " + error);
-  }
-        </script>
-    </head>
-    <body>
         <!-- Home -->
         <div data-role="page" id="page1">
             <div data-theme="a" data-role="header">
@@ -44,32 +34,37 @@ session_start();
                 </h3>
             </div>
             <div data-role="content">
-                <h1 align='center'>
-                    Welcome to Study Group App
-                </h1>
-                <a href="#page1">
-                    <div style=" text-align:center">
+                <h2 align='center'>
+                    Hi <?php echo $user->getName();?> 
+                    <br>
+                    <br>
+                    Welcome to Study Group 
+                </h2>
+                 <div style=" text-align:center">
+                	<a href="index.php">               
                         <img style="width: 160px; height: 200px" src="exam.png" />
-                    </div>
-                </a>
-                <a data-role="button" href="www.viewYourTests.com">
-                    view your tests
-                </a>
-                <a data-role="button" href="newTest.php">
-                    create new test
-                </a>
-                <a data-role="button" href="www.testStatistics.com">
-                    tests statistics
-                </a>
-                <a data-role="button" href="www.aboutOrHelp.com">
-                    about / help
-                </a>
+                	</a>
+                </div>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-theme="b" data-role="button" href="viewTests.php">
+                    	view/answer tests
+                	</a>
+                </div>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-role="button" href="newTest.php">
+                    	create new test
+                	</a>
+                 </div>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-theme="a" data-role="button" href="www.testStatistics.com">
+                    	tests statistics
+                	</a>
+                 </div>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-theme="e" data-role="button" href="www.aboutOrHelp.com">
+                    	about / help
+                	</a>
+                </div>
             </div>
-            <div data-theme="a" data-role="footer" data-position="fixed">
-                <h3>
-                    Nimrod Lahav app
-                </h3>
-            </div>
-        </div>
-    </body>
-</html>
+
+<?php include 'tail.php';?>

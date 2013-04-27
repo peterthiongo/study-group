@@ -11,6 +11,25 @@ class Question{
 		$this->answers = $Answers;
 		$this->rightAnswer = $right;
 	}
+	
+	function getText(){
+		return $this->questionText;
+	}
+	
+	function getAnswers(){
+		return $this->answers;
+	}
+	
+	function getRightAnswer(){
+		return $this->rightAnswer;
+	}
+	
+	function getRandomAnswers(){
+		$answersArr=$this->answers;
+		$answersArr[]=$this->rightAnswer;
+		shuffle($answersArr);
+		return $answersArr;
+	}
 }
 
 

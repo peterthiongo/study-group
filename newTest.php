@@ -1,7 +1,13 @@
 <?php
+include 'head.php';
 include 'Classes/DB.php';
 session_start();
-//$DB = new DB();
+
+//get user details
+$user = $_SESSION['user'];
+
+//open DB 
+$DB = new DB();
 
 //will indicate if user finished entering the question for the test
 $finishTest = false;
@@ -19,9 +25,17 @@ else{
 
 //check if user entered a test name
 if (isset($_POST['testName'])){
-	//user created a new test
-	$test = new Test($_POST['testName']);
+	//user created a new test - get its name
+	$test = new Test($_POST['testName'],$user->getId());
+	//get the test subject
+	$test->setSubject($_POST['subject']);
+	//indicate we can start questions input
 	$testHasName = true;
+	//check if test is public
+	if ($_POST['public'] == 'on')
+		$test->setPublic(true);
+	else
+		$test->setPublic(false);
 }
 
 
@@ -29,11 +43,11 @@ if (isset($_POST['testName'])){
 if (isset($_POST['question'])){
 	//get all user input fields
 	$text = $_POST['question'];
-	$right = $_POST['rAnswer'];
+	$right = str_replace(",", "|", $_POST['rAnswer']);
 	$Answers = array();
-	$Answers[]= $_POST['w1Answer'];
-	$Answers[]= $_POST['w2Answer'];
-	$Answers[]= $_POST['w3Answer'];
+	$Answers[]= str_replace(",", "|", $_POST['w1Answer']);
+	$Answers[]= str_replace(",", "|", $_POST['w2Answer']);
+	$Answers[]= str_replace(",", "|", $_POST['w3Answer']);
 	$question = new Question($text, $Answers, $right);
 	//add them to the test
 	$test->addQuestion($question);
@@ -64,47 +78,15 @@ if (isset($test)){
 }
 
 ?>
-
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <title>
-        </title>
-        <link rel="stylesheet" href="https://s3.amazonaws.com/codiqa-cdn/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
-        <link rel="stylesheet" href="my.css" />
-        <script src="https://s3.amazonaws.com/codiqa-cdn/jquery-1.7.2.min.js">
-        </script>
-        <script src="https://s3.amazonaws.com/codiqa-cdn/mobile/1.2.0/jquery.mobile-1.2.0.min.js">
-        </script>
-        <script src="my.js">
-        </script>
-        <!-- User-generated css -->
-        <style>
-        </style>
-        <!-- User-generated js -->
-        <script>
-            try {
-
-    $(function() {
-
-    });
-
-  } catch (error) {
-    console.error("Your javascript has an error: " + error);
-  }
-        </script>
-    </head>
-    <body>
         <!-- Home -->
         <div data-role="page" id="page1">
             <div data-theme="a" data-role="header">
                 <h3>
                     Study Group - Create New Test
                 </h3>
+        		<a data-role="button" data-theme="b" href="index.php" data-icon="home" data-iconpos="right" class="ui-btn-right">
+           			 Home
+           		</a>
             </div>
             
 <?php 
@@ -115,9 +97,28 @@ if (!$testHasName){ ?>
 	<form action="newTest.php" method="post" id="form"> 
 		<div align='center' data-role="fieldcontain">
 			<h2 align='center'>
-				Enter Test Name:
+				Test Name:
 			</h2>
             <input name="testName" id="textinput1" placeholder="" value="" type="text">
+            
+			<h2 align='center'>
+				Test Subject:
+			</h2>
+            <input name="subject" id="textinput1" placeholder="" value="" type="text">
+            <br>
+            <br>
+            <div align="center">
+	            <select name="public" id="toggleswitch1" data-theme="b" data-role="slider" size="width=800">
+             	    <option value="on">
+	                    public
+	                </option>
+	                <option value="off">
+	                    private
+	                </option>
+	            </select>
+	            <p align="center">public test will show for all users</p>
+            </div>
+            
         </div>
 		<input name="Submit" data-inline="true"  type="submit" value="Create Test" />
 	</form>
@@ -193,6 +194,7 @@ unset($_SESSION['newTest']);
 //end of $canelTest
 //user finished entering the question show the test and button
 else{
+$DB->saveTestToDB($test);
 unset($_SESSION['newTest']);
 ?>
 	<div align="center">
@@ -206,14 +208,5 @@ unset($_SESSION['newTest']);
 	
 <?php
 }
-
+include 'tail.php';
 ?>
-      </div>
-            <div data-theme="a" data-role="footer" data-position="fixed">
-                <h3>
-                    Nimrod Lahav app
-                </h3>
-            </div>
-        </div>
-    </body>
-</html>
