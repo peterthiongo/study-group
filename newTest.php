@@ -99,12 +99,12 @@ if (!$testHasName){ ?>
 			<h2 align='center'>
 				Test Name:
 			</h2>
-            <input name="testName" id="textinput1" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="testName" id="textinput1" placeholder="" value="" type="text">
             
 			<h2 align='center'>
 				Test Subject:
 			</h2>
-            <input name="subject" id="textinput1" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="subject" id="textinput1" placeholder="" value="" type="text">
             <br>
             <br>
             <div align="center">
@@ -116,7 +116,7 @@ if (!$testHasName){ ?>
 	                    private
 	                </option>
 	            </select>
-	            <p align="center">public test will show for all users</p>
+	            <p align="center">*public test will show for all users</p>
             </div>
             
         </div>
@@ -128,7 +128,7 @@ if (!$testHasName){ ?>
 } //end of testHasName if           
 
 //user has allready enterd the name , continue to ask for questions :
-else if (!$finishTest){ ?>
+else if (!$finishTest && !$canelTest){ ?>
             
 <div data-role="content">
 
@@ -144,27 +144,27 @@ else if (!$finishTest){ ?>
 	<br>
 		<div align='center' data-role="fieldcontain">
 			<h4 align='center'>Enter Question Text :</h4>
-			<textarea name="question" id="textarea1" placeholder=""></textarea>
+			<textarea style="text-align :center; direction :RTL" name="question" id="textarea1" placeholder=""></textarea>
 		</div>
 		
         <div align='center' data-role="fieldcontain">
         	<h4 align='center'>Right Answer:</h4>
-            <input name="rAnswer" id="textinput1" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="rAnswer" id="textinput1" placeholder="" value="" type="text">
         </div>
         
         <div align='center' data-role="fieldcontain">
 			<h4 align='center'>Wrong Answer #1:</h4>
-            <input name="w1Answer" id="textinput2" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="w1Answer" id="textinput2" placeholder="" value="" type="text">
         </div>
         
         <div align='center' data-role="fieldcontain">
 			<h4 align='center'>Wrong Answer #2:</h4>
-            <input name="w2Answer" id="textinput3" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="w2Answer" id="textinput3" placeholder="" value="" type="text">
         </div>
         
         <div align='center' data-role="fieldcontain">
 			<h4 align='center'>Wrong Answer #3:</h4>
-            <input name="w3Answer" id="textinput4" placeholder="" value="" type="text">
+            <input style="text-align :center; direction :RTL" name="w3Answer" id="textinput4" placeholder="" value="" type="text">
         </div>
         
         <input name="Submit" data-inline="true"  type="submit" value="Next Question" />
@@ -177,7 +177,7 @@ else if (!$finishTest){ ?>
 //end of $finishTest check
 //check if user wished to delete this test
 else if ($canelTest){
-unset($_SESSION['newTest']);
+	unset($_SESSION['newTest']);
 ?>
 	<div align="center">
 	<br>

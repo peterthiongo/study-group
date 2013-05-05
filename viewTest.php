@@ -29,42 +29,80 @@ if (isset($_GET['id'])){
             </div>
             <br>
             <br>
-         	<a data-role="button" href="">
-            	Test name : <?php echo $test->getTestName()?>
-        	</a>
-        	<a data-role="button" href="">
-            	Test subject : <?php echo $test->getSubject()?>
-        	</a>
+            <div align="center">
+	         	<a data-theme="b" data-inline="true"  data-role="button" href="">
+		            	Test name :
+	        	</a>
+	        	<br>
+	         	<a data-inline="true"  style="text-align :center; direction :RTL" data-role="button" href="">
+		            	<?php echo $test->getTestName()?>
+	        	</a>
+	        	<br>
+	         	<a data-theme="b" data-inline="true"  data-role="button" href="">
+		            	Test subject :
+	        	</a>
+				<br>
+	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
+	            	 <?php echo $test->getSubject()?>
+	        	</a>
+	        	
+	        	<br>
+
+	        	<?php foreach ($questionsArr as $question){?>
+	        	 <a data-theme="b" data-inline="true"  data-role="button" href="">
+		            	Question : 
+	        	</a>
+	        	<br>
+	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
+	            	<?php echo $question->getText()?>
+	        	</a>
+	        	<br>
+
+	        	
+	        	<a data-theme="b" data-inline="true"  data-role="button" href="">
+		            	Answers : 
+	        	</a>
+	        	<?php $answers = $question->getRandomAnswers();?>
+		            <select data-inline="true" id="selectmenu1" name="">
+		                <option style="text-align :center; direction :RTL" value="value">
+		                    <?php echo $answers[0]?>
+		                </option>
+		                <option style="text-align :center; direction :RTL" value="value">
+		                    <?php echo $answers[1]?>
+		                </option>
+		                <option style="text-align :center; direction :RTL" value="value">
+		                   <?php echo $answers[2]?>
+		                </option>
+		                <option style="text-align :center; direction :RTL" value="value">
+		                    <?php echo $answers[3]?>
+		                </option>
+		            </select>
+	        
+	        	
+	        	<?php } //end of foreach question?>
+	        	<br>
+	        	<a data-theme="b" data-inline=true  data-role="button" href="">
+		            	Date created :
+	        	</a>
+	        	<br>
+	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
+	            	<?php echo $test->getDate()?>
+	        	</a>
+	        	<br>
+	        	<a data-theme="b" data-inline="true"  data-role="button" href="">
+		            	Created by :
+	        	</a>
+	        	<br>
+	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
+	           		<?php echo $test->getOriginator()?>
+	        	</a>
         	
-        	<?php foreach ($questionsArr as $question){?>
-        	<a data-role="button" href="">
-            	question : <?php echo $question->getText()?>
-        	</a>
-        	<div align="center" data-role="fieldcontain">
-        	<?php $answers = $question->getRandomAnswers();?>
-	            <select id="selectmenu1" name="">
-	                <option value="value">
-	                    1)<?php echo $answers[0]?>
-	                </option>
-	                <option value="value">
-	                    2)<?php echo $answers[1]?>
-	                </option>
-	                <option value="value">
-	                   3)<?php echo $answers[2]?>
-	                </option>
-	                <option value="value">
-	                    4)<?php echo $answers[3]?>
-	                </option>
-	            </select>
+        	<br><br>
+        	    <a data-role="button" data-theme="b" href="index.php" data-icon="home" data-iconpos="right" class="ui-btn-right">
+           			 Home
+           		</a>
         	</div>
-        	
-        	<?php } //end of foreach question?>
-        	<a data-role="button" href="">
-            	<?php echo $test->getDate()?>
-        	</a>
-        	<a data-role="button" href="">
-           		<?php echo $test->getOriginator()?>
-        	</a>
+
 
 <?php
 

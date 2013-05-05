@@ -30,7 +30,20 @@ class Question{
 		shuffle($answersArr);
 		return $answersArr;
 	}
+	
+	function getRandomAnswersIndexed(){
+		$answersArr=$this->answers;
+		$answersArr[]=$this->rightAnswer;
+		$index = 1;
+		$answersArrIndexed=array();
+		foreach ($answersArr as $answer){
+			$answersArrIndexed[]=$answer.="|||$index";
+			$index++;
+		}
+		
+		shuffle($answersArrIndexed);
+		return $answersArrIndexed;
+	}
 }
-
 
 ?>

@@ -5,10 +5,13 @@
  *
  */
 
+define ('RIGHT_ANSWER',4);
+
 
 include 'Classes/test.php';
 include 'Classes/question.php';
 include 'Classes/user.php';
+include 'Classes/turn.php';
 
 class DB{
 	
@@ -89,7 +92,8 @@ class DB{
 		$test->setSubject($subject);
 		$test->setQuestions($this->generateQuestions($questions, $answers));
 		$test->setDate($date);
-
+		$test->setId($id);
+		
 		return $test;
 		
 	}
