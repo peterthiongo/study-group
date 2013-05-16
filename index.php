@@ -56,7 +56,7 @@ else{
                 	</a>
                  </div>
                 <div align="center">
-                	<a style="width: 250px;" data-inline="true" data-theme="a" data-role="button" href="www.testStatistics.com">
+                	<a style="width: 250px;" data-inline="true" data-theme="a" data-role="button" href="viewTestStatistics.php">
                     	tests statistics
                 	</a>
                  </div>

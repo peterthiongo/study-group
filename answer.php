@@ -24,24 +24,34 @@ if (isset($_GET['id'])){
 		$questionNumber = $_GET['q'];
 		//if this is the first question we creat a user turn
 		if ($questionNumber == 1){
-			$turn = new Turn();
+			$turn = new Turn($test->getId(),$user->getId());
 			$_SESSION['turn'] = $turn;
 		}
 		//the user is in the middle of the turn and take it from session
-		else if (isset($_SESSION['turn']))
+		else if (isset($_SESSION['turn'])){
 			$turn = $_SESSION['turn'];
 		
-		//take the users answer
-		$userAnswer = $_GET['answer'];
-		
-		//check if the user is right or wrong 
-		if ($userAnswer === RIGHT_ANSWER)
-			$turn->userAnswerdRight();
-		else
-			$turn->userAnswerdWrong();
-		//take the user time
-		$answerTime = $time - $_GET['time'];
-		$turn->setAnswerTime($answerTime);
+			//take the users answer
+			$userAnswer = $_GET['answer'];
+			$userAnswer = $DB->makeSafe($userAnswer);
+			
+			//check if the user is right or wrong 
+			if ($userAnswer == RIGHT_ANSWER)
+				$turn->userAnswerdRight();
+			else
+				$turn->userAnswerdWrong();
+			//take the user time
+			$answerTime = $time - $_GET['time'];
+			$answerTime = $DB->makeSafe($answerTime);
+			$turn->setAnswerTime($answerTime);
+			$turn->setAnswers($userAnswer);
+			
+			if ($questionNumber == count($questionsArr)+1){
+				$turn->calculateTurnScore();
+				$turn->calculateTotalTime();
+			}
+		}
+		else $turn = $_SESSION['turn'];
 		
 	}
 ?>
@@ -119,21 +129,71 @@ if (isset($_GET['id'])){
 
 <?php
 	}else {//user finished the test ?>
-
-<h3 align="center">Test Completed</h3>
-<br>
-<br>
 	        	<div style=" text-align:center">              
-                   <img style="width: 600px; height: 100px" src="Finished.png" />
+                   <img style="width: 300px; height: 50px" src="Finished.png" />
             	</div>
             	<br>
             	<div align="center">
-            	<a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	View Test Results
-	        	</a>
-	        	<?php var_dump($turn);?>
+            	<h3>Your Test Results</h3>
 	        	</div>
-
+            <?php for ($i = 0 ; $i < count($questionsArr) ; $i++){?>
+            <div align="center">
+            	<br>
+                <h4>
+                    Question <?php echo $i+1?>
+                </h4>
+                <a style="text-align :center; dir :RTL">
+                    <?php echo $questionsArr[$i]->getText();?>
+                </a><br>
+                <h5>
+                   Your Answer :
+                </h5>
+                <a style="text-align :center; dir :RTL">
+                   <?php 
+                   $answerArr = $turn->getAnswers();
+                   $answer = $answerArr[$i];
+                   
+                   if ($answer == RIGHT_ANSWER)
+                   		$answerText = $questionsArr[$i]->getRightAnswer();
+                   else{
+                   		$answerText = $questionsArr[$i]->getAnswers();
+                   		$answerText = $answerText[$answer];
+					}
+                   	echo $answerText;	?>
+                </a>
+                <h5>
+                   You Were : <?php echo $turn->getRightOrWrong($i)?>
+                </h5>
+                <?php $results = $turn->getResults(); if (!$results[$i]){?>
+	                <h5>
+	                   Right Answer :
+	                </h5>
+	                <a style="text-align :center; dir :RTL">
+	                   <?php echo $questionsArr[$i]->getRightAnswer();?>
+	                </a><br>
+                <?php }?>
+                <h5>
+                   You answered in  : <?php $time = $turn->getAnswerTime(); echo $time[$i]?> seconds
+                </h5>        	        	
+            <?php  } //end of foreach question?>	
+                <br><br>
+               <h3>
+                   Total Score : <?php echo $turn->getTotalRightAnswers()?> / <?php echo count($questionsArr)?> 
+               </h3>
+               <h3>
+                   Your Grade : <?php echo $turn->getScore()?>
+                </h3>
+               <h3>
+                   Total Test Time (sec) : <?php echo $turn->getTotalTime()?>
+                </h3>
+                <a data-role="button"  data-inline="true" href="index.php">
+            		main menu
+            	</a> 
+              </div> 
+              <?php 
+              //write this turn into DB
+              $DB->writeTurnToDB($turn);
+              ?>
 
 <?php 
 }//end of user finished the test

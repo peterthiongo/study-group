@@ -61,7 +61,7 @@ if (isset($_GET['id'])){
                <a style="width: 250px;" data-inline="true" data-theme="b" data-role="button" href="viewTest.php?id=<?php echo $test->getId()?>">
                     	View Test
                </a>
-               <a style="width: 250px;" data-inline="true" data-theme="b" data-role="button" href="beginTest.php?id=<?php echo $test->getId()?>">
+               <a style="width: 250px;" data-inline="true" data-theme="b" data-role="button" href="answer.php?id=<?php echo $test->getId()?>&q=1">
                     	Answer Test
                </a>
   

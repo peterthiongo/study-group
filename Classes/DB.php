@@ -99,6 +99,61 @@ class DB{
 	}
 	
 	/**
+	 * function will write turn (object) into DB 
+	 * using searlize
+	 * function checks for safe input
+	 * @param unknown_type $turn
+	 */
+	function writeTurnToDB($turn){
+		//get user id
+		$userID = $turn->getTurnUserID();
+		//get turn id
+		$turnID = $turn->getTurnId();
+		//get test id
+		$testID = $turn->getTestID();
+		
+		//write into DB
+		
+		//searlize the object 
+		$turnDB = serialize($turn);
+		
+		$query= "INSERT INTO turns VALUES('$turnID','$userID','$testID','$turnDB') ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		
+		//done
+	}
+	
+	function getUsersTests($userID){
+		$testsIDs = array();
+		
+		$query = "SELECT testID from turns WHERE userID = '$userID' ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		
+		while (list($testID) = $sqlResult->fetch_row())
+			$testsIDs[]=$testID;
+		
+		$testsIDs = array_unique($testsIDs);
+		
+		$tests = array();
+		
+		foreach ($testsIDs as $testID){
+			$tests[] = $this->getTestFromDB($testID);
+		}
+		
+		return $tests;
+	}
+	
+	function getTurnFromDB(){		
+		$query = "SELECT * from turns";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		
+		list($turnID,$userID,$testID,$turnDB) = $sqlResult->fetch_row();
+		$turn = unserialize($turnDB);
+		
+		return $turn;
+	}
+	
+	/**
 	 * function will return list of test from DB sorted by test name
 	 */
 	function getAllTest(){
