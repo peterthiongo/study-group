@@ -1,29 +1,35 @@
 <?php  
-include 'head.php';
 include 'Classes/DB.php';
-
 session_start();
-//check for user
-if (isset($_SESSION['user']))
-	$user = $_SESSION['user'];
+include 'head.php';
+$DB=new DB();
+$facebook=$DB->facebook;
+
+//check login status of user :
+// Get User ID
+$facebookUser = $DB->facebook->getUser();
+// We may or may not have this data based on whether the user is logged in.
+//
+// If we have a $user id here, it means we know the user is logged into
+// Facebook, but we don't know if the access token is valid. An access
+// token is invalid if the user logged out of Facebook.
 
 
-//check if user aborted creating a test
-if (isset($_SESSION['newTest']))
-	unset($_SESSION['newTest']);
-
-//new user, create http://localhost/study/?user=1
-else{
-	//for testing purpose this will be a facebook user
-	if (isset($_GET['user']))
-		$user = new User(2,'Phillip');
-	else
-		$user = new User(1,'Nimrod');
-	
-	//save the user to the session
-	$_SESSION['user'] = $user;
+if ($facebookUser) {
+	try {
+		// Proceed knowing you have a logged in user who's authenticated.
+		$user_profile = $facebook->api('/me');
+		$userName=$user_profile['name'];
+		$userID=$user_profile['id'];
+		$user = new User($userID,$userName);
+		$_SESSION['user'] = $user;
+	} catch (FacebookApiException $e) {
+			error_log($e);
+			$facebookUser = false;
+	}
 }
 
+if ($facebookUser) {
 ?>
 
         <!-- Home -->
@@ -61,10 +67,39 @@ else{
                 	</a>
                  </div>
                 <div align="center">
-                	<a style="width: 250px;" data-inline="true" data-theme="e" data-role="button" href="www.aboutOrHelp.com">
+                	<a style="width: 250px;" data-inline="true" data-theme="e" data-role="button" href="about.php">
                     	about / help
                 	</a>
                 </div>
             </div>
 
-<?php include 'tail.php';?>
+<?php }
+else { //let user register with facebook first 
+$button1TXT = "Login";
+$params = array(
+		redirect_uri => "http://www.nimrod-lahav.com/study/"
+);
+$txt=$DB->facebook->getLoginUrl($params);
+$button1URL = $txt;
+
+?>
+   <!-- Home -->
+        <div data-role="page" id="page1">
+            <div data-theme="a" data-role="header">
+                <h3>
+                    Study Group
+                </h3>
+            </div>
+            <div data-role="content">
+                <h2 align='center'>
+                   Hi, please sign in with facebook before using this app
+                    <br>
+                    <br>
+                </h2>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-theme="a" data-role="button" href="<?php echo $button1URL?>">
+                    	<?php echo $button1TXT?>
+                	</a>
+                 </div>
+                </div></div> 
+<?php } include 'tail.php';?>

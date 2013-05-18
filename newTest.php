@@ -1,8 +1,7 @@
 <?php
-include 'head.php';
 include 'Classes/DB.php';
 session_start();
-
+include 'head.php';
 //get user details
 $user = $_SESSION['user'];
 

@@ -1,9 +1,7 @@
 <?php
-include 'head.php';
 include 'Classes/DB.php';
-
 session_start();
-
+include 'head.php';
 //create DB 
 $DB = new DB();
 

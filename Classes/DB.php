@@ -12,22 +12,94 @@ include 'Classes/test.php';
 include 'Classes/question.php';
 include 'Classes/user.php';
 include 'Classes/turn.php';
+require 'Classes/facebook.php';
 
 class DB{
 	
 	private $mysqli;
+	public $facebook;
 	
 	//defualt value for our DB
 	function __construct(){
 		//create db
-		@$this->mysqli = new mysqli('localhost','root','root','study');
+		//@$this->mysqli = new mysqli('XX');
+		@$this->mysqli = new mysqli(XX);
 		//working in hebrew & english
 		mysqli_set_charset($this->mysqli,'utf8');
+		
+		$this->facebook = new Facebook(array(
+				'appId' => 'XX',
+				'secret' => 'XX',
+		));
 	
 	}
 	
 	function __destruct(){
 		$this->mysqli->close();
+	}
+	
+	function getAmountOfUserAnsweredTest($testID){
+		$count = 0;
+		$query = "SELECT  DISTINCT userID from turns WHERE testID = '$testID' ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		while (list($testID) = $sqlResult->fetch_row())
+			$count++;
+		
+		return $count;
+	}
+	
+	function getTotalAttemptsForTest($testID){
+		$count = 0;
+		$query = "SELECT userID from turns WHERE testID = '$testID' ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		while (list($testID) = $sqlResult->fetch_row())
+			$count++;
+	
+		return $count;
+	}
+	
+	function getAverageTestTime($testID){
+		$timeArray = array();
+		$query = "SELECT turn from turns WHERE testID = '$testID' ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		while (list($turnDB) = $sqlResult->fetch_row()){
+			$turn = unserialize($turnDB);
+			$timeArray[]=$turn->getTotalTime();
+		}
+		
+		$sum = array_sum($timeArray);
+		$average = $sum / count ($timeArray);
+		return $average;
+	}
+	
+	function getAverageTimeForQuestion($testID,$questionNum){
+		$timeArray = array();
+		$query = "SELECT turn from turns WHERE testID = '$testID' ";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+		while (list($turnDB) = $sqlResult->fetch_row()){
+			$turn = unserialize($turnDB);
+			$time=$turn->getAnswerTime();
+			$timeArray[]=$time[$questionNum];
+		}
+	
+		$sum = array_sum($timeArray);
+		$average = $sum / count ($timeArray);
+		return $average;
+	}
+	
+	function getQuestionPieChart($questionNum,$testID){
+		//get all turns
+		$turns = $this->getTurnsByTestID($testID);
+		
+		//go over test and gets its question statistics
+		$answersCount=array(0,0,0,0);
+		
+		foreach ($turns as $turn){
+			$answers = $turn->getAnswers();
+			$answersCount[$answers[$questionNum]]++;
+		}
+		
+		return $answersCount;
 	}
 	
 	/**
@@ -152,6 +224,21 @@ class DB{
 		
 		return $turn;
 	}
+	
+	
+	function getTurnsByTestID($testID){
+		$turns = array();
+		$query = "SELECT * from turns WHERE testID = $testID";
+		$sqlResult =  $this->mysqli->query($query,MYSQLI_STORE_RESULT);
+	
+		while (list($turnID,$userID,$testID,$turnDB) = $sqlResult->fetch_row()){
+			$turn = unserialize($turnDB);
+			$turns[]=$turn;
+		}
+	
+		return $turns;
+	}
+	
 	
 	/**
 	 * function will return list of test from DB sorted by test name

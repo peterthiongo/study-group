@@ -1,31 +1,24 @@
 <?php
-include 'head.php';
 include 'Classes/DB.php';
-
 session_start();
+include 'head.php';
+$DB=new DB();
 
-//create DB 
-$DB = new DB();
-
-//check for user
-if (isset($_SESSION['user']))
+if (isset($_SESSION['user'])){
 	$user = $_SESSION['user'];
-
-
-
-if (isset($_GET['id'])){
-	$test = $DB->getTestFromDB($_GET['id']);
-	$questionsArr = $test->getQuestions();
-	
-	//get how many people answered the test
-	
-	//get average answer time of the test
-	
-	//show all question 
-	
-	//each question show pie of corect and wrong 
-	
-	//each question show average answer time
+	if (isset($_GET['id'])){
+		$test = $DB->getTestFromDB($_GET['id']);
+		$questionsArr = $test->getQuestions();
+		
+		//get how many people answered the test
+		$totalUsersAnswered = $DB->getAmountOfUserAnsweredTest($test->getId());
+		//get total attempts
+		$totalAttempts = $DB->getTotalAttemptsForTest($test->getId());
+		//get average test time of the test
+		$averageTestTime = $DB->getAverageTestTime($test->getId());
+		//show all question 
+		
+		//each question show pie of corect and wrong 
 	?>
 	        <!-- Home -->
         <div data-role="page" id="page1">
@@ -38,79 +31,38 @@ if (isset($_GET['id'])){
            		</a>
             </div>
 	          <div align="center">
-	         	<a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	Test name :
-	        	</a>
-	        	<br>
+	         	<h4>Test name :</h4>
 	         	<a data-inline="true"  style="text-align :center; direction :RTL" data-role="button" href="">
 		            	<?php echo $test->getTestName()?>
 	        	</a>
-	        	<br>
-	         	<a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	Test subject :
-	        	</a>
-				<br>
-	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
-	            	 <?php echo $test->getSubject()?>
-	        	</a>
-	        	
-	        	<br>
-
-	        	<?php foreach ($questionsArr as $question){?>
-	        	 <a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	Question : 
-	        	</a>
-	        	<br>
+	         	<h4>Total User Answered This Test : <?php echo $totalUsersAnswered?></h4>
+	         	<h4>Total Attempts for this Test : <?php echo $totalAttempts?></h4>
+	        	<h4>Average Test Time (in seconds) : <?php echo $averageTestTime?></h4>
+	        	<?php $questionNum=0; foreach ($questionsArr as $question){ ?>
+	        	<h4>Question : <?php echo $questionNum+1?></h4>
 	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
 	            	<?php echo $question->getText()?>
 	        	</a>
+	        	<h4>Average Answer Time (sec) : <?php echo $DB->getAverageTimeForQuestion($test->getId(),$questionNum)?></h4>
+	        	<h4>Answers :</h4>
+	        	<?php $answers = $question->getAnswers();?>
+	        	<font color="5360ff"><h5>1)  <?php echo $answers[0]?></h5></font>	        	
+	        	<font color="ff1e30"><h5>2)  <?php echo $answers[1]?></h5></font>	        	
+	        	<font color="0b8500"><h5>3) <?php echo $answers[2]?></h5></font>        	
+	        	<font color="7006ff"><h5>4)  <?php echo $question->getRightAnswer();?></h5></font>
+	        	<?php 
+	        	//calculate questions total answers
+	        	$answersArr = serialize($DB->getQuestionPieChart($questionNum, $test->getId()));
+	        	?>
+	        	<img src="pie.php?title=Answer Pie&data=<?php echo $answersArr?>" />        	
+	        	<?php $questionNum++; } //end of foreach question?>
 	        	<br>
-
-	        	
-	        	<a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	Answers : 
-	        	</a>
-	        	<?php $answers = $question->getRandomAnswers();?>
-		            <select data-inline="true" id="selectmenu1" name="">
-		                <option style="text-align :center; direction :RTL" value="value">
-		                    <?php echo $answers[0]?>
-		                </option>
-		                <option style="text-align :center; direction :RTL" value="value">
-		                    <?php echo $answers[1]?>
-		                </option>
-		                <option style="text-align :center; direction :RTL" value="value">
-		                   <?php echo $answers[2]?>
-		                </option>
-		                <option style="text-align :center; direction :RTL" value="value">
-		                    <?php echo $answers[3]?>
-		                </option>
-		            </select>
-	        
-	        	
-	        	<?php } //end of foreach question?>
-	        	<br>
-	        	<a data-theme="b" data-inline=true  data-role="button" href="">
-		            	Date created :
-	        	</a>
-	        	<br>
-	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
-	            	<?php echo $test->getDate()?>
-	        	</a>
-	        	<br>
-	        	<a data-theme="b" data-inline="true"  data-role="button" href="">
-		            	Created by :
-	        	</a>
-	        	<br>
-	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
-	           		<?php echo $test->getOriginator()?>
-	        	</a>
-        	
-        	<br><br>
+	        	<h4>Date created : <?php echo $test->getDate()?></h4>
+		        <h4>Created by : <?php echo $test->getOriginator()?></h4>
         	    <a data-role="button" data-theme="b" href="index.php" data-icon="home" data-iconpos="right" class="ui-btn-right">
            			 Home
            		</a>
-        	</div>
-	
+        	</div>	
 <?php 
 } else {
 	//get all tests
@@ -145,4 +97,4 @@ if (isset($_GET['id'])){
         </ul>
    
 
-<?php include 'tail.php';?>
+<?php } include 'tail.php';?>
