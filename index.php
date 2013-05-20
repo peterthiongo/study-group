@@ -43,6 +43,7 @@ if ($facebookUser) {
                 <h2 align='center'>
                     Hi <?php echo $user->getName();?> 
                     <br>
+                    <img src="http://graph.facebook.com/<?php echo $facebookUser?>/picture?type=normal" />
                     <br>
                     Welcome to Study Group 
                 </h2>
@@ -66,6 +67,11 @@ if ($facebookUser) {
                     	tests statistics
                 	</a>
                  </div>
+                <div align="center">
+                	<a style="width: 250px;" data-inline="true" data-theme="c" data-role="button" href="facebookInvite.php">
+                    	invite facebook friends
+                	</a>
+                </div>
                 <div align="center">
                 	<a style="width: 250px;" data-inline="true" data-theme="e" data-role="button" href="about.php">
                     	about / help

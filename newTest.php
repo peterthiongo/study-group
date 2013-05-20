@@ -2,11 +2,41 @@
 include 'Classes/DB.php';
 session_start();
 include 'head.php';
-//get user details
-$user = $_SESSION['user'];
+$DB=new DB();
+$facebook=$DB->facebook;
 
-//open DB 
-$DB = new DB();
+//check login status of user :
+// Get User ID
+$facebookUser = $DB->facebook->getUser();
+// We may or may not have this data based on whether the user is logged in.
+//
+// If we have a $user id here, it means we know the user is logged into
+// Facebook, but we don't know if the access token is valid. An access
+// token is invalid if the user logged out of Facebook.
+
+
+if ($facebookUser) {
+	try {
+		// Proceed knowing you have a logged in user who's authenticated.
+		$user_profile = $facebook->api('/me');
+		$userName=$user_profile['name'];
+		$userID=$user_profile['id'];
+		$user = new User($userID,$userName);
+		$_SESSION['user'] = $user;
+		$token = $facebook->getAccessToken();
+		$groups = $facebook->api("/me/groups?access_token=$token");
+		$groupArr=array();
+		foreach ($groups['data'] as $group) {
+			$group_name = $group['name'];
+			$groupArr[]=$group_name;
+		}
+	} catch (FacebookApiException $e) {
+			error_log($e);
+			$facebookUser = false;
+	}
+}
+
+
 
 //will indicate if user finished entering the question for the test
 $finishTest = false;
@@ -99,7 +129,6 @@ if (!$testHasName){ ?>
 				Test Name:
 			</h2>
             <input style="text-align :center; direction :RTL" name="testName" id="textinput1" placeholder="" value="" type="text">
-            
 			<h2 align='center'>
 				Test Subject:
 			</h2>
@@ -115,7 +144,8 @@ if (!$testHasName){ ?>
 	                    private
 	                </option>
 	            </select>
-	            <p align="center">*public test will show for all users</p>
+	            <p align="center">*public test will show for all users</p><br>
+	            <p align="center">*private test will show only for your friends</p>
             </div>
             
         </div>

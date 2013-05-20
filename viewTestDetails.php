@@ -49,13 +49,14 @@ if (isset($_GET['id'])){
 	            	<?php echo $test->getDate()?>
 	        	</a>
 	        	<br>
-	        	<a data-theme="a" data-inline="true"  data-role="button" href="">
-		            	Created by :
-	        	</a>
-	        	<a data-inline="true" style="text-align :center; direction :RTL" data-role="button" href="">
-	           		<?php echo $test->getOriginator()?>
-	        	</a>
-	        	<br><br>
+	        	<?php 
+	        	$userID = $test->getOriginator();
+	        	$name =  json_decode(file_get_contents("http://graph.facebook.com/$userID"))->name;
+	        	?>
+		        <h4>Created by : <?php echo $name?></h4>
+		         <img  src="http://graph.facebook.com/<?php echo $userID?>/picture" />
+		         <br>
+		         <br>
                <a style="width: 250px;" data-inline="true" data-theme="b" data-role="button" href="viewTest.php?id=<?php echo $test->getId()?>">
                     	View Test
                </a>

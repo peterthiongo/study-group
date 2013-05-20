@@ -39,7 +39,7 @@ $p1->SetStartAngle(0);
 //$p1->SetLabelType(PIE_LABEL_ABS);
 $p1->ShowBorder();
 $p1->SetColor('black');
-$p1->SetSliceColors(array('#5360ff','#ff1e30','#0b8500','#7006ff'));
+$p1->SetSliceColors(array('#0b001a','#ff1e30','#0b8500','#1a1aff'));
 
 
 $graph->Stroke();

@@ -22,9 +22,8 @@ class DB{
 	//defualt value for our DB
 	function __construct(){
 		//create db
-		//@$this->mysqli = new mysqli('XX');
-		@$this->mysqli = new mysqli(XX);
-		//working in hebrew & english
+		//@$this->mysqli = new mysqli('localhost','XX','XX','XX');
+				//working in hebrew & english
 		mysqli_set_charset($this->mysqli,'utf8');
 		
 		$this->facebook = new Facebook(array(
@@ -96,7 +95,7 @@ class DB{
 		
 		foreach ($turns as $turn){
 			$answers = $turn->getAnswers();
-			$answersCount[$answers[$questionNum]]++;
+			$answersCount[$answers[$questionNum]-1]++;
 		}
 		
 		return $answersCount;

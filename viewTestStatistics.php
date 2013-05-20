@@ -46,10 +46,10 @@ if (isset($_SESSION['user'])){
 	        	<h4>Average Answer Time (sec) : <?php echo $DB->getAverageTimeForQuestion($test->getId(),$questionNum)?></h4>
 	        	<h4>Answers :</h4>
 	        	<?php $answers = $question->getAnswers();?>
-	        	<font color="5360ff"><h5>1)  <?php echo $answers[0]?></h5></font>	        	
-	        	<font color="ff1e30"><h5>2)  <?php echo $answers[1]?></h5></font>	        	
-	        	<font color="0b8500"><h5>3) <?php echo $answers[2]?></h5></font>        	
-	        	<font color="7006ff"><h5>4)  <?php echo $question->getRightAnswer();?></h5></font>
+	        	<font color="0b001a"><h5>1)  <?php echo $answers[0]?><img style="width: 20px; height: 20px" src="xmark.png"/></h5></font>	        	
+	        	<font color="ff1e30"><h5>2)  <?php echo $answers[1]?><img style="width: 20px; height: 20px" src="xmark.png"/></h5></font>	        	
+	        	<font color="0b8500"><h5>3) <?php echo $answers[2]?><img style="width: 20px; height: 20px" src="xmark.png"/></h5></font>        	
+	        	<font color="1a1aff"><h5>4)  <?php echo $question->getRightAnswer();?><img style="width: 20px; height: 20px" src="vmark.png"/></h5></font>
 	        	<?php 
 	        	//calculate questions total answers
 	        	$answersArr = serialize($DB->getQuestionPieChart($questionNum, $test->getId()));
@@ -58,7 +58,15 @@ if (isset($_SESSION['user'])){
 	        	<?php $questionNum++; } //end of foreach question?>
 	        	<br>
 	        	<h4>Date created : <?php echo $test->getDate()?></h4>
-		        <h4>Created by : <?php echo $test->getOriginator()?></h4>
+	        	<?php 
+	        	$userID = $test->getOriginator();
+	        	$name =  json_decode(file_get_contents("http://graph.facebook.com/$userID"))->name;
+	        	?>
+		        <h4>Created by : <?php echo $name?> </h4>
+		        <br>
+		        <img src="http://graph.facebook.com/<?php echo $userID?>/picture" />
+		        <br>
+		        <br>
         	    <a data-role="button" data-theme="b" href="index.php" data-icon="home" data-iconpos="right" class="ui-btn-right">
            			 Home
            		</a>

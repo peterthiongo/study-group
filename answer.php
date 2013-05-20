@@ -96,7 +96,7 @@ if (isset($_GET['id'])){
 	        	<br>
 	        	<h4 align="center">*choose from 1 answer below (click on it)</h4>
 	        	<div style=" text-align:center">              
-                   <img style="width: 100px; height: 100px" src="greenArrow.png" />
+                   <img style="width: 50px; height: 50px" src="greenArrow.png" />
             	</div>
 	        	<?php $answers = $question->getRandomAnswersIndexed();
 	        	$answer1 = explode("|||",$answers[0]);
@@ -151,16 +151,20 @@ if (isset($_GET['id'])){
                    $answerArr = $turn->getAnswers();
                    $answer = $answerArr[$i];
                    
-                   if ($answer == RIGHT_ANSWER)
+                   if ($answer == RIGHT_ANSWER){
                    		$answerText = $questionsArr[$i]->getRightAnswer();
+                   		$img = "vmark.png";
+                   		}
                    else{
                    		$answerText = $questionsArr[$i]->getAnswers();
-                   		$answerText = $answerText[$answer];
+                   		$answerText = $answerText[$answer-1];
+                   		$img = "xmark.png";
 					}
                    	echo $answerText;	?>
+                   	<img style="width: 30px; height: 30px" src="<?php echo $img?>"/>
                 </a>
                 <h5>
-                   You Were : <?php echo $turn->getRightOrWrong($i)?>
+                   You Were : <?php echo $turn->getRightOrWrong($i)?> 
                 </h5>
                 <?php $results = $turn->getResults(); if (!$results[$i]){?>
 	                <h5>
